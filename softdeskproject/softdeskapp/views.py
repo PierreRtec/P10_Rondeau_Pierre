@@ -1,12 +1,11 @@
-from rest_framework.viewsets import ReadOnlyModelViewSet
+from django.contrib.auth.models import User
+from rest_framework.permissions import AllowAny
 
-from .models import Users
-from .serializers import UsersSerializer
+from .serializers import RegisterSerializer
+from rest_framework import generics
 
 
-class UsersViewset(ReadOnlyModelViewSet):
-
-    serializer_class = UsersSerializer
-
-    def get_queryset(self):
-        return Users(active=True)
+class RegisterView(generics.CreateAPIView):
+    queryset = User.objects.all()
+    permission_classes = (AllowAny,)
+    serializer_class = RegisterSerializer
