@@ -1,5 +1,12 @@
-from django.http import HttpResponse
+from rest_framework.viewsets import ReadOnlyModelViewSet
+
+from .models import Users
+from .serializers import UsersSerializer
 
 
-def index(request):
-    return HttpResponse("Hello, world. You're at the softdeskapp index.")
+class UsersViewset(ReadOnlyModelViewSet):
+
+    serializer_class = UsersSerializer
+
+    def get_queryset(self):
+        return Users(active=True)
