@@ -1,9 +1,10 @@
 from django.contrib.auth.models import User
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
+from rest_framework.response import Response
 from rest_framework.validators import UniqueValidator
-from softdeskapp.models import Projects, Contributors, Issues, Comments
 
+from softdeskapp.models import Contributors, Issues, Projects
 
 """
 FORMATAGE DE LA DONNEE
@@ -63,10 +64,10 @@ class RegisterSerializer(serializers.ModelSerializer):
 
 
 class ProjectsSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Projects
         fields = "__all__"
+        read_only_fields = ('author', 'id')
 
     def _user(self):
         request = self.context.get("request", None)
@@ -74,6 +75,7 @@ class ProjectsSerializer(serializers.ModelSerializer):
             return request.user
 
     def create(self, validated_data):
+
         projects = Projects.objects.create(
             title=validated_data["title"],
             description=validated_data["description"],
@@ -86,29 +88,26 @@ class ProjectsSerializer(serializers.ModelSerializer):
 
 
 class ContributorsSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Contributors
         fields = "__all__"
 
     def create(self, validated_data):
-        project = Projects.objects.get(id=self.context['view'].kwargs['project_pk'])
+        project = Projects.objects.get(id=self.context["view"].kwargs["project_pk"])
         contributors = Contributors.objects.create(
-            contrib_user=validated_data['contrib_user'],
-            project_id=project
+            contrib_user=validated_data["contrib_user"], project_id=project
         )
         return contributors
 
 
 class IssuesSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Issues
         fields = "__all__"
 
-
-class CommentsSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Comments
-        fields = "__all__"
+    def create(self, validated_data):
+        project = Projects.objects.get(id=self.context["view"].kwargs["project_pk"])
+        issues = Issues.objects.create(
+            assignee=validated_data["assignee"], project_id=project
+        )
+        return issues

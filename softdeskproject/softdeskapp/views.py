@@ -1,11 +1,11 @@
 from rest_framework import viewsets
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated
 
-from .models import Projects, Contributors, Issues, Comments
-from .permissions import ContributorReadOnly, AuthorAccess
-from .serializers import ProjectsSerializer, CommentsSerializer, IssuesSerializer, ContributorsSerializer
-
-
+from .models import Contributors, Issues, Projects
+from .permissions import AuthorAccess, ContributorReadOnly
+from .serializers import (ContributorsSerializer,
+                          IssuesSerializer, ProjectsSerializer,
+                          RegisterSerializer, User)
 
 """
 ACCES ENDPOINT, PERMISSIONS, GESTION DE DONNEES, REQUETES
@@ -13,6 +13,14 @@ Les views sont là pour permettre l'accès à un endpoint (à ce qu'il renvoit)
 ModelViewSet créé un CRUD de base
 APIViewSet faut tout faire à la main, pas de routes de base
 """
+
+
+class RegisterViewSet(viewsets.ModelViewSet):
+    serializer_class = RegisterSerializer
+    permission_classes = [AllowAny]
+
+    def get_queryset(self):
+        return User.objects.all()
 
 
 class ProjectsViewSet(viewsets.ModelViewSet):
@@ -36,16 +44,9 @@ class ContributorsViewSet(viewsets.ModelViewSet):
 
 class IssuesViewSet(viewsets.ModelViewSet):
     serializer_class = IssuesSerializer
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        issues = Issues.objects.all()
+        project = Projects.objects.filter(author_user=self.request.user) # attribut du modèle
+        issues = Issues.objects.filter(assignee_id=self.kwargs['project_pk'], project=project)
         return issues
-
-
-class CommentsViewSet(viewsets.ModelViewSet):
-    serializer_class = CommentsSerializer
-
-    def get_queryset(self):
-        comments = Comments.objects.all()
-        return comments
-
