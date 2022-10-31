@@ -4,7 +4,7 @@ from rest_framework_nested import routers
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from softdeskapp.views import (
-    # CommentsViewSet,
+    CommentsViewSet,
     ContributorsViewSet,
     IssuesViewSet,
     ProjectsViewSet,
@@ -14,13 +14,15 @@ from softdeskapp.views import (
 router = routers.SimpleRouter()
 router.register(r"projects", ProjectsViewSet, basename="projects")
 router.register(r"register", RegisterViewSet, basename="register")
-# {url}projects/id/contributor
-# id dans le router
+router.register(r"issues", RegisterViewSet, basename="issues")
 
 project_router = routers.NestedSimpleRouter(router, r"projects", lookup="project")
 project_router.register(r"contributors", ContributorsViewSet, basename="projects")
 project_router.register(r"issues", IssuesViewSet, basename="issues")
-# project_router.register(r"comments", CommentsViewSet, basename="comments")
+
+
+issue_router = routers.NestedSimpleRouter(project_router, r"issues", lookup="issue")
+issue_router.register(r"comments", CommentsViewSet, basename="comments")
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -29,4 +31,5 @@ urlpatterns = [
     path("auth/login/refresh/", TokenRefreshView.as_view(), name="refresh_token"),
     path("api/", include(router.urls)),
     path("api/", include(project_router.urls)),
+    path("api/", include(issue_router.urls)),
 ]

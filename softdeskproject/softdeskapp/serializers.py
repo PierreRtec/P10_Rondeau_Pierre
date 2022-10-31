@@ -1,19 +1,9 @@
 from django.contrib.auth.models import User
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
-from rest_framework.response import Response
 from rest_framework.validators import UniqueValidator
 
-from softdeskapp.models import Contributors, Issues, Projects
-
-"""
-FORMATAGE DE LA DONNEE
-Les serializers ne sont pas obligatoires
-Il traite les données 
-Quand on utilise un serializer, il gère et check les données valides
-Il serialize le modèle, gestion modèle
-On peut pas accèder aux données ici, ce sera dans la vue
-"""
+from softdeskapp.models import Contributors, Issues, Projects, Comments
 
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -91,6 +81,7 @@ class ContributorsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Contributors
         fields = "__all__"
+        read_only_fields = ('project_id', 'permission', 'role')
 
     def create(self, validated_data):
         project = Projects.objects.get(id=self.context["view"].kwargs["project_pk"])
@@ -105,9 +96,36 @@ class IssuesSerializer(serializers.ModelSerializer):
         model = Issues
         fields = "__all__"
 
+    def _user(self):
+        request = self.context.get("request", None)
+        if request:
+            return request.user
+
     def create(self, validated_data):
         project = Projects.objects.get(id=self.context["view"].kwargs["project_pk"])
         issues = Issues.objects.create(
-            assignee=validated_data["assignee"], project_id=project
+            assignee=validated_data["assignee"], project=project,
+            author=self._user()
         )
         return issues
+
+
+class CommentsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comments
+        fields = "__all__"
+
+    def _user(self):
+        request = self.context.get("request", None)
+        if request:
+            return request.user
+
+    def create(self, validated_data):
+        comments = Comments.objects.create(
+            description=validated_data['description'],
+            tag=validated_data['tag'],
+            priority=validated_data['priority'],
+            comment_issue=self._user(),
+            comment_auth_user=validated_data['comment_auth_user'],
+        )
+        return comments
