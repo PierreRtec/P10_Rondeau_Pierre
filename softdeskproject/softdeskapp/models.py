@@ -1,8 +1,8 @@
 from django.conf.global_settings import AUTH_USER_MODEL
 from django.db import models
 
-TYPES_PROJECTS = [("A", "typeA"), ("B", "typeB"), ("C", "typeC")]
-TAG = [("BACK", "back-end"), ("FRONT", "front-end"), ("IOS", "iOs"), ("ANDROID", "android")]
+TAG = [("BUG", "bug"), ("AMELIORATION", "amélioration"), ("TACHE", "tâche")]
+TYPES_PROJECTS = [("BACK", "back-end"), ("FRONT", "front-end"), ("IOS", "iOs"), ("ANDROID", "android")]
 PRIORITY = [("ELEVEE", "élevée"), ("MOYENNE", "moyenne"), ("FAIBLE", "faible")]
 STATUS = [("EN COURS", "en cours"), ("A FAIRE", "à faire"), ("TERMINEE", "terminée")]
 
