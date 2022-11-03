@@ -50,7 +50,7 @@ class Issues(models.Model):
     desc = models.CharField(max_length=1024)
     tag = models.CharField(max_length=48, choices=TAG)
     priority = models.CharField(max_length=48, choices=PRIORITY)
-    status = models.CharField(max_length=48, blank=True, choices=TYPES_PROJECTS)
+    status = models.CharField(max_length=48, blank=True, choices=STATUS)
     author = models.ForeignKey(
         to=AUTH_USER_MODEL,
         related_name="issue_admin",
