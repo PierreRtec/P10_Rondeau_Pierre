@@ -51,7 +51,7 @@ class IsAuthorContribIssue(permissions.BasePermission):
             is_contrib_issue = Contributors.objects.filter(
                 project_id=view.kwargs["project_pk"]
             ).filter(contrib_user=request.user.id)
-            if project.author == request.user or bool(is_contrib_issue):
+            if project.author_user == request.user or bool(is_contrib_issue):
                 return True
             return False
         if view.action in ("destroy", "update"):
