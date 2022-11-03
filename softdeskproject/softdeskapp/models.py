@@ -2,6 +2,9 @@ from django.conf.global_settings import AUTH_USER_MODEL
 from django.db import models
 
 TYPES_PROJECTS = [("A", "typeA"), ("B", "typeB"), ("C", "typeC")]
+TAG = [("BACK", "back-end"), ("FRONT", "front-end"), ("IOS", "iOs"), ("ANDROID", "android")]
+PRIORITY = [("ELEVEE", "élevée"), ("MOYENNE", "moyenne"), ("FAIBLE", "faible")]
+STATUS = [("EN COURS", "en cours"), ("A FAIRE", "à faire"), ("TERMINEE", "terminée")]
 
 
 class Projects(models.Model):
@@ -9,7 +12,7 @@ class Projects(models.Model):
     objects = None
     title = models.CharField(max_length=128)
     description = models.CharField(max_length=1024)
-    type = models.CharField(max_length=10, choices=TYPES_PROJECTS)
+    type = models.CharField(max_length=48, choices=TYPES_PROJECTS)
     author_user = models.ForeignKey(
         to=AUTH_USER_MODEL,
         related_name="project_admin",
@@ -45,9 +48,9 @@ class Issues(models.Model):
 
     title = models.CharField(max_length=128)
     desc = models.CharField(max_length=1024)
-    tag = models.CharField(max_length=24) # si bien le #2514 nom story / sinon = type de problème reported
-    priority = models.CharField(max_length=24)
-    status = models.CharField(max_length=24, blank=True)
+    tag = models.CharField(max_length=48, choices=TAG)
+    priority = models.CharField(max_length=48, choices=PRIORITY)
+    status = models.CharField(max_length=48, blank=True, choices=TYPES_PROJECTS)
     author = models.ForeignKey(
         to=AUTH_USER_MODEL,
         related_name="issue_admin",
@@ -68,8 +71,8 @@ class Comments(models.Model):
     objects = None
 
     description = models.CharField(max_length=1024)
-    tag = models.CharField(max_length=24)
-    priority = models.CharField(max_length=24)
+    tag = models.CharField(max_length=48, choices=TAG)
+    priority = models.CharField(max_length=48, choices=PRIORITY)
     comment_auth_user = models.ForeignKey(
         to=AUTH_USER_MODEL,
         related_name="comment_admin",

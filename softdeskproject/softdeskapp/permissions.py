@@ -6,18 +6,30 @@ from .models import Projects, Contributors, Issues, Comments
 """CUSTOM PERMISSIONS"""
 
 
-class IsProjectOwnerOrContributor(permissions.BasePermission):
+class IsAuthorProjectsView(permissions.BasePermission):
     """
-    Check if user is project owner or contributor for a project or a project_id
-    http_methods : retrieve, destroy, update
+    Check if user is author or contributor for project
+    http_methods : destroy, update
     """
-
     def has_permission(self, request, view):
-        if view.action in ("retrieve", "destroy", "update"):
+        if view.action in ("destroy", "update"):
             try:
-                content = Projects.objects.get(
-                    pk=view.kwargs["pk"]
-                ) or Projects.objects.get(pk=view.kwargs["project_pk"])
+                content = Projects.objects.get(pk=view.kwargs["pk"])
+            except ObjectDoesNotExist:
+                return False
+            return content.author_user == request.user
+        return True
+
+
+class IsAuthorContributorsView(permissions.BasePermission):
+    """
+    Check if user is the contributor of the project
+    http_methods : destroy, update
+    """
+    def has_permission(self, request, view):
+        if view.action in ("destroy", "update"):
+            try:
+                content = Projects.objects.get(pk=view.kwargs["project_pk"])
             except ObjectDoesNotExist:
                 return False
             return content.author_user == request.user

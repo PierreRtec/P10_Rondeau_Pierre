@@ -2,7 +2,7 @@ from rest_framework import viewsets
 from rest_framework.permissions import AllowAny, IsAuthenticated
 
 from .models import Contributors, Issues, Projects, Comments
-from .permissions import IsProjectOwnerOrContributor, IsAuthorContribIssue, IsAuthorContribComment
+from .permissions import IsAuthorProjectsView, IsAuthorContributorsView, IsAuthorContribIssue, IsAuthorContribComment
 from .serializers import (ContributorsSerializer, CommentsSerializer,
                           IssuesSerializer, ProjectsSerializer,
                           RegisterSerializer, User)
@@ -24,7 +24,7 @@ class ProjectsViewSet(viewsets.ModelViewSet):
     Projects view list
     perms : IsAuthenticated, IsOwnerProject
     """
-    permission_classes = [IsAuthenticated, IsProjectOwnerOrContributor]
+    permission_classes = [IsAuthenticated, IsAuthorProjectsView]
     serializer_class = ProjectsSerializer
 
     def get_queryset(self):
@@ -38,7 +38,7 @@ class ContributorsViewSet(viewsets.ModelViewSet):
     Contributors view list
     """
     serializer_class = ContributorsSerializer
-    permission_classes = [IsAuthenticated, IsProjectOwnerOrContributor]
+    permission_classes = [IsAuthenticated, IsAuthorContributorsView]
 
     def get_queryset(self):
         contributors = Contributors.objects.filter(project_id=self.kwargs['project_pk'])
