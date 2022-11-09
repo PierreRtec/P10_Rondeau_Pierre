@@ -68,12 +68,24 @@ class Issues(models.Model):
 
 class Comments(models.Model):
 
-class Question(models.Model):
-    question_text = models.CharField(max_length=200)
-    pub_date = models.DateTimeField('date published')
+    objects = None
 
+    description = models.CharField(max_length=1024)
+    tag = models.CharField(max_length=48, choices=TAG)
+    priority = models.CharField(max_length=48, choices=PRIORITY)
+    comment_auth_user = models.ForeignKey(
+        to=AUTH_USER_MODEL,
+        related_name="comment_admin",
+        on_delete=models.CASCADE,
+        blank=True,
+    )
+    comment_issue = models.ForeignKey(
+        to=AUTH_USER_MODEL,
+        related_name="issue_comment_admin",
+        on_delete=models.CASCADE,
+        blank=True,
+    )
+    created_time = models.DateTimeField(auto_now_add=True, verbose_name="Date")
 
-class Choice(models.Model):
-    question = models.ForeignKey(Question, on_delete=models.CASCADE)
-    choice_text = models.CharField(max_length=200)
-    votes = models.IntegerField(default=0)
+    def __str__(self):
+        return self.tag
