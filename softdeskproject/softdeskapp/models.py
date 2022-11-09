@@ -2,7 +2,12 @@ from django.conf.global_settings import AUTH_USER_MODEL
 from django.db import models
 
 TAG = [("BUG", "bug"), ("AMELIORATION", "amélioration"), ("TACHE", "tâche")]
-TYPES_PROJECTS = [("BACK", "back-end"), ("FRONT", "front-end"), ("IOS", "iOs"), ("ANDROID", "android")]
+TYPES_PROJECTS = [
+    ("BACK", "back-end"),
+    ("FRONT", "front-end"),
+    ("IOS", "iOs"),
+    ("ANDROID", "android"),
+]
 PRIORITY = [("ELEVEE", "élevée"), ("MOYENNE", "moyenne"), ("FAIBLE", "faible")]
 STATUS = [("EN COURS", "en cours"), ("A FAIRE", "à faire"), ("TERMINEE", "terminée")]
 
@@ -58,10 +63,16 @@ class Issues(models.Model):
         blank=True,
     )
     project = models.ForeignKey(
-        to=Projects, related_name="issue_project_admin", on_delete=models.CASCADE, blank=True
+        to=Projects,
+        related_name="issue_project_admin",
+        on_delete=models.CASCADE,
+        blank=True,
     )
     assignee = models.ForeignKey(
-        to=Contributors, related_name="assignee_admin", on_delete=models.CASCADE, blank=True
+        to=Contributors,
+        related_name="assignee_admin",
+        on_delete=models.CASCADE,
+        blank=True,
     )
     created_time = models.DateTimeField(auto_now_add=True, verbose_name="Date")
 

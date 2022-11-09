@@ -1,9 +1,10 @@
 from rest_framework import viewsets
 from rest_framework.permissions import AllowAny, IsAuthenticated
 
-from .models import Contributors, Issues, Projects, Comments
-from .permissions import IsAuthorProjectsView, IsAuthorContributorsView, IsAuthorContribIssue, IsAuthorContribComment
-from .serializers import (ContributorsSerializer, CommentsSerializer,
+from .models import Comments, Contributors, Issues, Projects
+from .permissions import (IsAuthorContribComment, IsAuthorContribIssue,
+                          IsAuthorContributorsView, IsAuthorProjectsView)
+from .serializers import (CommentsSerializer, ContributorsSerializer,
                           IssuesSerializer, ProjectsSerializer,
                           RegisterSerializer, User)
 

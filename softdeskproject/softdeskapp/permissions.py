@@ -1,7 +1,7 @@
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import permissions
 
-from .models import Projects, Contributors, Issues, Comments
+from .models import Comments, Contributors, Issues, Projects
 
 """CUSTOM PERMISSIONS"""
 
