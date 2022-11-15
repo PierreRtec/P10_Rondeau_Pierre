@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
-from softdeskapp.models import Comments, Contributors, Issues, Projects
+from .models import Comments, Contributors, Issues, Projects
 
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -56,7 +56,7 @@ class ProjectsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Projects
         fields = "__all__"
-        read_only_fields = ('author', 'id')
+        read_only_fields = ("author", "id")
 
     def _user(self):
         request = self.context.get("request", None)
@@ -80,7 +80,7 @@ class ContributorsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Contributors
         fields = "__all__"
-        read_only_fields = ('project_id', 'permission', 'role')
+        read_only_fields = ("project_id", "permission", "role")
 
     def create(self, validated_data):
         project = Projects.objects.get(id=self.context["view"].kwargs["project_pk"])
@@ -103,7 +103,13 @@ class IssuesSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         project = Projects.objects.get(id=self.context["view"].kwargs["project_pk"])
         issues = Issues.objects.create(
-            assignee=validated_data["assignee"], project=project,
+            assignee=validated_data["assignee"],
+            project=project,
+            title=validated_data["title"],
+            desc=validated_data["desc"],
+            tag=validated_data["tag"],
+            priority=validated_data["priority"],
+            status=validated_data["status"],
             author=self._user()
         )
         return issues
@@ -121,10 +127,10 @@ class CommentsSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         comments = Comments.objects.create(
-            description=validated_data['description'],
-            tag=validated_data['tag'],
-            priority=validated_data['priority'],
+            description=validated_data["description"],
+            tag=validated_data["tag"],
+            priority=validated_data["priority"],
             comment_issue=self._user(),
-            comment_auth_user=validated_data['comment_auth_user'],
+            comment_auth_user=validated_data["comment_auth_user"],
         )
         return comments
