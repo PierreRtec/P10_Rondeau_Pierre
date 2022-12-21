@@ -51,7 +51,7 @@ Vous devriez voir dans le terminal : _`Starting development server at http://127
 
 1234 correspond au port de votre serveur local
 
-Avant de requêter l'API SoftDesk, vous pouvez à présent continuer de suivre les instructions de la documentation sur [PostMan](https://documenter.getpostman.com/view/19936781/2s8YY9uRtA)
+Avant de requêter l'API SoftDesk, vous pouvez à présent continuer de suivre les instructions de la documentation sur [PostMan](https://documenter.getpostman.com/view/19936781/2s8YmGW6ZB)
 
 Django Rest Framework possède déjà une interface web, donc vous pouvez également vous servir des instructions données sur PostMan pour requêter l'API depuis n'importe quel navigateur.
 
